@@ -1,6 +1,6 @@
 {
   "name": "cordova_script",
-  "version": "0.1.0",
+  "version": "1.1.0",
   "description": "package for reco cli (react.cordova)",
   "main": "dist/index.js",
   "scripts": {
