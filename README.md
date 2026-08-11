@@ -15,12 +15,16 @@ pointing at `cordova.js`. The only thing it decides is the URL:
 
 | Condition | `cordova.js` resolved from |
 | --- | --- |
-| `NODE_ENV === "production"` **and** `"serviceWorker" in navigator` | `<PUBLIC_URL>/cordova.js` — the copy Cordova itself injects into the packaged app |
+| `NODE_ENV === "production"` | `<PUBLIC_URL>/cordova.js` — the copy Cordova itself injects into the packaged app |
 | Anything else | `http://<host>:8597/browser/www<PUBLIC_URL>/cordova.js` — served by `cordova serve 8597`, which `reco start` runs for you |
 
-Note that the production path is gated on **both** conditions, so a production build
-running where `navigator.serviceWorker` is unavailable falls back to the localhost dev
-URL.
+**Changed in 1.2.0.** The production path used to also require `"serviceWorker" in
+navigator`, copied from Create React App's service-worker boilerplate even though this
+package registers no service worker. But `navigator.serviceWorker` is undefined on
+`file://` and on WKWebView custom-scheme origins — exactly the packaged-app
+environments this shim exists for — so those builds silently fell through to the
+localhost dev URL and Cordova never loaded. A production build now always takes the
+production path.
 
 That is the whole package: about thirty lines, no dependencies, no exports. It also
 appends an HTML comment to the document body so you can see where the tag came from
