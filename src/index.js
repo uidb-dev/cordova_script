@@ -1,20 +1,17 @@
-
-const isLocalhost = Boolean(
-    window.location.hostname === 'localhost' ||
-    // [::1] is the IPv6 localhost address.
-    window.location.hostname === '[::1]' ||
-    // 127.0.0.1/8 is considered localhost for IPv4.
-    window.location.hostname.match(
-        /^127(?:\.(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)){3}$/
-    )
-);
-
 let cordovaScript_URL = "";
 
-if (process.env.NODE_ENV === 'production' && 'serviceWorker' in navigator) {
-    //production
-}
-else {
+// In a production build the app is packaged inside the Cordova container, so
+// cordova.js is served next to the app and a relative URL is correct.
+// In any other build we point at the `cordova run browser` dev server.
+//
+// NOTE: this gate used to also require `'serviceWorker' in navigator`, copied
+// from Create React App's service-worker registration boilerplate. That check
+// is meaningless here (nothing registers a service worker) and actively
+// harmful: `navigator.serviceWorker` is undefined on file:// and on the custom
+// schemes used by iOS WKWebView and older cordova-android, so a *production*
+// build in exactly the target environment fell through to the development
+// branch and tried to load cordova.js from a localhost dev server.
+if (process.env.NODE_ENV !== 'production') {
     cordovaScript_URL = document.URL.slice(0, document.URL.lastIndexOf(":")) + ":8597/browser/www";
 }
 
@@ -31,4 +28,3 @@ window.addEventListener('load', (e) => {
     e.currentTarget.document.body.appendChild(tag);
 
 });
-
